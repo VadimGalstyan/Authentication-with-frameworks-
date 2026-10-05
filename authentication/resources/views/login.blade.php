@@ -1,34 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+@extends('layouts.auth')
 
-</head>
-<body>
+@section('title', 'Log in')
+
+@section('content')
+
+    <h1>Log in</h1>
+
     @if ($errors->any())
-        <ul style="color: red">
-            @foreach ($errors->all() as $error )
-            <li>{{ $error }}</li>
-
+        <ul class="errors">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
             @endforeach
         </ul>
     @endif
 
     <form method="POST" action="/login">
-        <div>
+        @csrf
+
+        <div class="field">
             <label>Email</label>
             <input type="email" name="email" value="{{ old('email') }}">
         </div>
 
-        <div>
+        <div class="field">
             <label>Password</label>
             <input type="password" name="password">
         </div>
 
-        <button type="submit">login</button>
-
+        <button type="submit">Log in</button>
     </form>
 
-</body>
-</html>
+    <div class="footer-link">
+        Don't have an account? <a href="/register">Register</a>
+    </div>
+
+@endsection

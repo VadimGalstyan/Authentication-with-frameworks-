@@ -1,18 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>  
-        <meta charset="UTF-8">
-        <title>Dashboard</title>
-    </head>
-    <body>
+@extends('layouts.app')
 
-        <h1>Dashboard</h1>
-        <p1>Welcome, {{ $user->name }}</p1>
-        <p1>Your email: {{ $user->email }}</p1>
+@section('title', 'Dashboard')
 
-        <form method="POST" action="/logout">
-            @csrf
-            <button type="submit">Log out</button>
-        </form>    
-    </body>
-</html>
+@section('content')
+
+    <h1>Dashboard</h1>
+
+    <div class="info-panel">
+        <div class="info-row">
+            <span class="label">Name</span>
+            <span class="value">{{ $user->name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Email</span>
+            <span class="value">{{ $user->email }}</span>
+        </div>
+    </div>
+
+@endsection

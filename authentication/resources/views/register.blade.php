@@ -1,43 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-</head>
+@extends('layouts.auth')
 
-<body>
+@section('title', 'Log in')
 
-    <h1>
-        Register
-    </h1>
+@section('content')
 
-    @if($errors->any())
-        <ul style="color: red">
-            @foreach($errors->all() as $error)
-                <li>{{$error}}</li>
+    <h1>Log in</h1>
+
+    @if ($errors->any())
+        <ul class="errors">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
             @endforeach
         </ul>
-
     @endif
 
     <form method="POST" action="/register">
         @csrf
-        <div>
+        <div class="field">
             <label>Name</label>
             <input type="text" name="name" value="{{old('name')}}">
         </div>
 
-        <div>
+        <div class="field">
             <label>Email</label>
             <input type="email" name="email" value="{{old('email')}}">
         </div>
 
-        <div>
+        <div class="field">
             <label>Password</label>
             <input type="password" name="password">
         </div>
 
-        <div>
+        <div class="field">
             <label>Password confirmation</label>
             <input type="password" name="password_confirmation">
         </div>
@@ -45,5 +39,4 @@
         <button type="submit">Create account</button>
     </form>
 
-</body>
-</html>
+@endsection
