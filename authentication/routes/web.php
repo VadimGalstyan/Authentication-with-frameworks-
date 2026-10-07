@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\VerifyEmailController;
+
 
 
 Route::get('/', function () {
@@ -21,4 +23,20 @@ Route::post('/login', [LoginController::class,'store']);
 
 Route::post('/logout', [LoginController::class,'logout']);
 
-Route::get('/dashboard', [DashboardController::class,'show'])->middleware('auth');
+Route::get('/dashboard', [DashboardController::class,'show'])->middleware(['auth','verified']);
+
+
+Route::middleware('auth')->group(function () 
+{
+    Route::get('/email/verify', function () {
+                            return view('auth.verify-email');
+                            })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, 'verify'])
+        ->middleware('signed')
+        ->name('verification.verify');
+
+    Route::post('/email/resend', [VerifyEmailController::class, 'resend'])
+        ->middleware('throttle:1,1')
+        ->name('verification.send');
+});
