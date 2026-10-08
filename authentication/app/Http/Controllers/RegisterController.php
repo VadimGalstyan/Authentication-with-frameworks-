@@ -17,17 +17,8 @@ class RegisterController extends Controller
     public function store(Request $request)
     {
         
-        $validated = $request->validate([
-            'name'=>['required','string','max:255'],
-            'email'=>['required','string','unique:users,email'],
-            'password'=>['required','confirmed', Password::defaults()],
-            ]);
 
-        $user = User::create([
-            'name'=> $validated['name'],
-            'email'=> $validated['email'],
-            'password'=> bcrypt($validated['password']),
-            ]);
+        $user = User::create($request->validated());
         
         event(new \Illuminate\Auth\Events\Registered($user));
 

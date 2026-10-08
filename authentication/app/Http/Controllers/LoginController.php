@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\LoginRequest;
 
 class LoginController extends Controller 
 {
@@ -11,22 +12,18 @@ class LoginController extends Controller
         return view("login");
     }
 
-    public function store(Request $request)
+    public function store(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            "email"=> ["required","email"],
-            "password"=> ["required","string"],
-            ]);
-
-        if(Auth::attempt($credentials))
+        if (Auth::attempt($request->validated())) 
         {
             $request->session()->regenerate();
 
-            return redirect("/dashboard");
+            return redirect('/dashboard');
         }
 
-
-        return back()->withErrors(["Invalid email or password"])->onlyInput('email');
+        return back()->withErrors([
+            'email' => 'Invalid email or password.',
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request)
