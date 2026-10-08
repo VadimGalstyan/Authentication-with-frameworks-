@@ -1,10 +1,10 @@
 @extends('layouts.auth')
 
-@section('title', 'Log in')
+@section('title', 'Forgot password')
 
 @section('content')
 
-    <h1>Log in</h1>
+    <h1>Forgot your password?</h1>
 
     @if (session('status'))
         <p class="footer-link" style="margin-top:0; text-align:left; color: var(--accent);">
@@ -20,28 +20,19 @@
         </ul>
     @endif
 
-    <form method="POST" action="/login">
+    <form method="POST" action="{{ route('password.email') }}">
         @csrf
 
         <div class="field">
             <label>Email</label>
-            <input type="email" name="email" value="{{ old('email') }}">
+            <input type="email" name="email" value="{{ old('email') }}" required>
         </div>
 
-        <div class="field">
-            <label>Password</label>
-            <input type="password" name="password">
-        </div>
-
-        <button type="submit">Log in</button>
+        <button type="submit">Send reset link</button>
     </form>
 
     <div class="footer-link">
-        Don't have an account? <a href="/register">Register</a>
-    </div>
-
-    <div class="footer-link">
-        <a href="{{ route('password.request') }}">Forgot password?</a>
+        <a href="/login">Back to login</a>
     </div>
 
 @endsection

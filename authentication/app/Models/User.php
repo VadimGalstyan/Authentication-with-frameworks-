@@ -11,6 +11,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\VerifyEmailNotification;
+use App\Notifications\ResetPasswordNotification;
+
 
 
 #[Fillable(['name', 'email', 'password'])]
@@ -36,5 +38,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification()
     {
         $this->notify(new VerifyEmailNotification());
+    }
+
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }
