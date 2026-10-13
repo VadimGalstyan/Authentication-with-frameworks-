@@ -50,3 +50,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/reset-password/{token}', [ResetPasswordController::class, 'show'])->name('password.reset');
     Route::post('/reset-password', [ResetPasswordController::class, 'store'])->name('password.update');
 });
+
+
+Route::get('/_test/admin', fn () => 'admin ok')->middleware(['auth', 'verified', 'permission:manage_users']);
+Route::get('/_test/staff', fn () => 'staff ok')->middleware(['auth', 'verified', 'role:admin,moderator']);
