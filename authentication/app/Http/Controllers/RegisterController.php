@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
+use App\Http\Requests\RegisterRequest;
 
 class RegisterController extends Controller
 {
@@ -14,7 +15,7 @@ class RegisterController extends Controller
         return view("register");
     }
 
-    public function store(Request $request)
+    public function store(RegisterRequest $request)
     {
         
 

@@ -13,10 +13,10 @@ use Illuminate\Notifications\Notifiable;
 use App\Notifications\VerifyEmailNotification;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
-
-
-
+#[ObservedBy([UserObserver::class])]
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
