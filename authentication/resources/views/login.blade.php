@@ -37,7 +37,7 @@
     </form>
 
     <div class="footer-link">
-        Don't have an account? <a href="/register">Register</a>
+        Don't have an account? <a href="{{ route('register') }}">Register</a>
     </div>
 
     <div class="footer-link">

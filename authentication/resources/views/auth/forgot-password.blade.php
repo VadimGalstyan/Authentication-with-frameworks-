@@ -32,7 +32,7 @@
     </form>
 
     <div class="footer-link">
-        <a href="/login">Back to login</a>
+        <a href="{{ route('login') }}">Back to login</a>
     </div>
 
 @endsection
