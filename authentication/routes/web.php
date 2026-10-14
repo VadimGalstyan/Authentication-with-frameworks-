@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\LoginController;
@@ -49,11 +48,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('permission:access_moderator_page')
         ->name('moderator.index');
 
+
+
     Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/', [AdminController::class, 'index'])
             ->middleware('permission:access_admin_page')
             ->name('index');
+        
+        Route::get('/', [AdminController::class, 'index'])
+        ->middleware('permission:access_admin_page')
+        ->name('index');
+
+        Route::patch('/{user}/role', [AdminController::class, 'updateRole'])
+            ->middleware('permission:manage_users')
+            ->name('update-role');
 
     });
+
 });

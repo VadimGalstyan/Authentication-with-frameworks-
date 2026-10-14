@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <h1>Log in</h1>
+    <h1>Registration</h1>
 
     @if ($errors->any())
         <ul class="errors">
