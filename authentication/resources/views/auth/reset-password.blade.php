@@ -1,4 +1,6 @@
-@extends('layouts.auth')
+@extends('layouts.app')
+
+@section('card', '1')
 
 @section('title', 'Reset password')
 
@@ -6,13 +8,7 @@
 
     <h1>Reset your password</h1>
 
-    @if ($errors->any())
-        <ul class="errors">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    @endif
+    <x-form-errors />
 
     <form method="POST" action="{{ route('password.update') }}">
         @csrf

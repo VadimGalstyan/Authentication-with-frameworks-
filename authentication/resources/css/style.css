@@ -205,3 +205,13 @@ body.dashboard {
   font-weight: 500;
   font-size: 0.9rem;
 }
+
+.flash-error {
+  background: #FBEAE9;
+  border: 1px solid #E7B8B4;
+  color: var(--error);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.3rem;
+  font-size: 0.9rem;
+}

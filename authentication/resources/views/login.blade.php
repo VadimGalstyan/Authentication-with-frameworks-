@@ -1,4 +1,6 @@
-@extends('layouts.auth')
+@extends('layouts.app')
+
+@section('card', '1')
 
 @section('title', 'Log in')
 
@@ -12,13 +14,7 @@
         </p>
     @endif
 
-    @if ($errors->any())
-        <ul class="errors">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    @endif
+    <x-form-errors />
 
     <form method="POST" action="/login">
         @csrf
