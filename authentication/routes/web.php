@@ -48,8 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('permission:access_moderator_page')
         ->name('moderator.index');
 
-
-
+        
     Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/', [AdminController::class, 'index'])
