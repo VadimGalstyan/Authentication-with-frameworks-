@@ -9,6 +9,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ModeratorController;
 use Illuminate\Support\Facades\Route;
 
+Route::redirect('/', '/dashboard');
+
 Route::middleware('guest')->group(function () {
 
     Route::get('/register', [RegisterController::class, 'show'])->name('register');

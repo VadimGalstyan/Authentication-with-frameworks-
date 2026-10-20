@@ -12,8 +12,8 @@ class AdminUserSeeder extends Seeder
     {
         
         $password = config('roles.admin.password');
-        
-        if (! $password) 
+
+        if (!$password) 
         {
             $this->command->error('Set ADMIN_PASSWORD in your .env file before seeding.');
             return;

@@ -1,69 +1,54 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserRoleRequest;
-use App\Models\Role;
 use App\Models\User;
+use App\Repositories\RoleRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
-    public function index(Request $request)
+    private UserRepository $users;
+    private RoleRepository $roles;
+    public function __construct(UserRepository $users,RoleRepository $roles)
     {
-        $query = User::query()->with('roles');
-
-        if ($search = $request->input('search')) 
-        {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        if ($roleId = $request->input('role_id')) 
-        {
-            $query->whereHas('roles', function ($q) use ($roleId) {
-                $q->where('roles.id', $roleId);
-            });
-        }
-
-        if ($request->filled('verified')) 
-        {
-            if ($request->boolean('verified')) 
-            {
-                $query->whereNotNull('email_verified_at');
-            } else {
-                $query->whereNull('email_verified_at');
-            }
-        }
-
-        $users = $query->paginate(15)->withQueryString();
-        $roles = Role::all();
-
-        return view('admin.index', compact('users', 'roles'));
+        $this->users = $users;
+        $this->roles = $roles;
     }
 
-    public function updateRole(UpdateUserRoleRequest $request, User $user)
+    public function index(Request $request)
     {
-        $this->authorize('updateRole', $user);
+        $this->authorize('viewAny', User::class);
 
-        $oldRoles = $user->roles->pluck('name')->join(', ');
+        $roles = $this->roles->all();
 
-        $newRoleId = $request->validated('role_id');
-        $newRole = Role::findOrFail($newRoleId);
+        $search = $request->string('q')->trim()->toString();
+        $roleFilter = $roles->contains('name', $request->query('role')) ? $request->query('role') : null;
+        $verified = in_array($request->query('verified'), ['yes', 'no'], true) ? $request->query('verified') : null;
 
-        $user->roles()->sync([$newRoleId]);
+        $users = $this->users->getForAdmin($search, $roleFilter, $verified)->withQueryString();
+
+        return view('admin.index', compact('users', 'roles', 'search', 'roleFilter', 'verified'));
+    }
+
+    public function updateRole(UpdateUserRoleRequest $request, User $user): RedirectResponse
+    {
+        $newRole = $this->roles->findOrFail($request->validated('role_id'));
+
+        $oldRoles = $this->users->changeRole($user, $newRole);
 
         Log::info('User role changed', [
-            'changed_by'  => auth()->id(),
+            'changed_by' => $request->user()->id,
             'target_user' => $user->id,
-            'old_roles'   => $oldRoles ?: 'none',
-            'new_role'    => $newRole->name,
-            'timestamp'   => now()->toDateTimeString(),
+            'old_role' => $oldRoles,
+            'new_role' => $newRole->name,
         ]);
 
-        return back()->with('success', "Role for {$user->name} updated to {$newRole->label}.");
+        return back()->with('status', "{$user->name} is now {$newRole->label}.");
     }
 }

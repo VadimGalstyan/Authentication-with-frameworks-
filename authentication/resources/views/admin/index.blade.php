@@ -7,9 +7,9 @@
 <div style="width: 100%; max-width: none; margin: 0; padding: 0; box-sizing: border-box;">
     <h1>Admin Users Management</h1>
 
-    @if(session('success'))
+    @if(session('status'))
         <div style="padding: 10px; background-color: #d1e7dd; color: #0f5132; margin-bottom: 15px; border-radius: 4px;">
-            {{ session('success') }}
+            {{ session('status') }}
         </div>
     @endif
 
@@ -26,16 +26,16 @@
     <form method="GET" action="{{ route('admin.index') }}" style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
         <input 
             type="text" 
-            name="search" 
+            name="q" 
             placeholder="Search name or email..." 
-            value="{{ request('search') }}"
+            value="{{ $search }}"
             style="padding: 8px; width: 220px;"
         >
 
-        <select name="role_id" style="padding: 8px;">
+        <select name="role" style="padding: 8px;">
             <option value="">All Roles</option>
             @foreach($roles as $role)
-                <option value="{{ $role->id }}" {{ request('role_id') == $role->id ? 'selected' : '' }}>
+                <option value="{{ $role->name }}" {{ $roleFilter === $role->name ? 'selected' : '' }}>
                     {{ $role->label }}
                 </option>
             @endforeach
@@ -43,8 +43,8 @@
 
         <select name="verified" style="padding: 8px;">
             <option value="">All Verification States</option>
-            <option value="1" {{ request('verified') === '1' ? 'selected' : '' }}>Verified</option>
-            <option value="0" {{ request('verified') === '0' ? 'selected' : '' }}>Unverified</option>
+            <option value="yes" {{ $verified === 'yes' ? 'selected' : '' }}>Verified</option>
+            <option value="no" {{ $verified === 'no' ? 'selected' : '' }}>Unverified</option>
         </select>
 
         <button type="submit" style="padding: 8px 15px; cursor: pointer;">Filter</button>

@@ -3,50 +3,23 @@
 namespace App\Observers;
 
 use App\Models\User;
-use App\Models\Role;
+use App\Repositories\RoleRepository;
 
 class UserObserver
 {
-    /**
-     * Handle the User "created" event.
-     */
+    private RoleRepository $roles;
+    public function __construct(RoleRepository $roles) 
+    {
+        $this->roles=$roles;
+    }
+
     public function created(User $user): void
     {
-        $role = Role::where('name', config('roles.default'))->first();
+        $role = $this->roles->findByName(config('roles.default'));
 
-        if ($role) {
+        if ($role) 
+        {
             $user->roles()->syncWithoutDetaching([$role->id]);
         }
-    }
-    /**
-     * Handle the User "updated" event.
-     */
-    public function updated(User $user): void
-    {
-        //
-    }
-
-    /**
-     * Handle the User "deleted" event.
-     */
-    public function deleted(User $user): void
-    {
-        //
-    }
-
-    /**
-     * Handle the User "restored" event.
-     */
-    public function restored(User $user): void
-    {
-        //
-    }
-
-    /**
-     * Handle the User "force deleted" event.
-     */
-    public function forceDeleted(User $user): void
-    {
-        //
     }
 }

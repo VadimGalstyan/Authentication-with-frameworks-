@@ -8,6 +8,8 @@ use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use App\Repositories\PermissionRepository;
+
 
 
 class AppServiceProvider extends ServiceProvider
@@ -23,15 +25,15 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+
+    public function boot(PermissionRepository $permissions): void
     {
         Password::defaults(function () {
             return Password::min(8)->letters()->numbers()->mixedCase();
         });
 
-        if (Schema::hasTable('permissions')) 
-        {
-            Permission::pluck('name')->each(function (string $name) {
+        if (Schema::hasTable('permissions')) {
+            $permissions->allNames()->each(function (string $name) {
                 Gate::define($name, fn (User $user) => $user->hasPermission($name));
             });
         }
