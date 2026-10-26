@@ -3,23 +3,16 @@
 namespace App\Observers;
 
 use App\Models\User;
-use App\Repositories\RoleRepository;
+use App\Services\UserService;
 
 class UserObserver
 {
-    private RoleRepository $roles;
-    public function __construct(RoleRepository $roles) 
+    public function __construct(private UserService $users) 
     {
-        $this->roles=$roles;
     }
 
     public function created(User $user): void
     {
-        $role = $this->roles->findByName(config('roles.default'));
-
-        if ($role) 
-        {
-            $user->roles()->syncWithoutDetaching([$role->id]);
-        }
+        $this->users->assignDefaultRole($user);
     }
 }

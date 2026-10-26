@@ -4,17 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
-use App\Repositories\UserRepository;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
+use App\Services\UserService;
 
 class RegisterController extends Controller
 {
-    private UserRepository $users;
-    public function __construct(UserRepository $users) 
-    {
-        $this->users = $users;
-    }
+    public function __construct(private UserService $users) {}
 
     public function show()
     {
@@ -23,12 +17,8 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request)
     {
-        $user = $this->users->create($request->validated());
+        $this->users->register($request->validated());
 
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect('/dashboard');
+        return redirect()->route('dashboard');
     }
 }
