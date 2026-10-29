@@ -3,16 +3,14 @@
 namespace App\Observers;
 
 use App\Models\User;
-use App\Services\UserService;
+use App\Services\UserRoleService;
 
 class UserObserver
 {
-    public function __construct(private UserService $users) 
-    {
-    }
+    public function __construct(private UserRoleService $roles) {}
 
     public function created(User $user): void
     {
-        $this->users->assignDefaultRole($user);
+        $this->roles->assignDefaultRole($user);
     }
 }

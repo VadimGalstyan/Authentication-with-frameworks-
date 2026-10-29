@@ -12,7 +12,7 @@ class VerifyEmailController extends Controller
     public function verify(EmailVerificationRequest $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail())
-        {
+        {           
             return redirect('/dashboard');
         }
 

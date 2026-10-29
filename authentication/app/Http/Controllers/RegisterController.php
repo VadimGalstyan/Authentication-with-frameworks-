@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
-use App\Services\UserService;
+use App\Services\RegistrationService;
 
 class RegisterController extends Controller
 {
-    public function __construct(private UserService $users) {}
+    public function __construct(private RegistrationService $registration) {}
 
     public function show()
     {
@@ -17,7 +17,7 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request)
     {
-        $this->users->register($request->validated());
+        $this->registration->register($request->validated());
 
         return redirect()->route('dashboard');
     }

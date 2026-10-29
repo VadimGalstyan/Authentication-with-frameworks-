@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\DataTransferObjects\UserFilter;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 
 class UserRepository
 {
@@ -13,48 +13,28 @@ class UserRepository
         return User::create($data);
     }
 
-    public function queryWithRoles(): Builder
+    public function paginateByFilter(UserFilter $filter, int $perPage): LengthAwarePaginator
     {
-        return User::with('roles');
-    }
+        return User::query()
+            ->with('roles')
+            ->when($filter->search !== '', function ($query) use ($filter) {
+                $term = '%' . $this->escapeLike($filter->search) . '%';
 
-    public function whereSearch(Builder $query, string $search): Builder
-    {
-        return $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%");
-        });
-    }
-
-    public function whereHasRole(Builder $query, string $role): Builder
-    {
-        return $query->whereHas('roles', function ($q) use ($role) {
-            $q->where('name', $role);
-        });
-    }
-
-    public function whereVerified(Builder $query): Builder
-    {
-        return $query->whereNotNull('email_verified_at');
-    }
-
-    public function whereUnverified(Builder $query): Builder
-    {
-        return $query->whereNull('email_verified_at');
-    }
-
-    public function orderById(Builder $query): Builder
-    {
-        return $query->orderBy('id');
-    }
-
-    public function paginate(Builder $query, int $perPage): LengthAwarePaginator
-    {
-        return $query->paginate($perPage);
+                $query->where(fn ($q) => $q->where('name', 'like', $term)
+                                           ->orWhere('email', 'like', $term));
+            })
+            ->when($filter->role !== null, fn ($query) => $query->whereHas(
+                'roles',
+                fn ($q) => $q->where('name', $filter->role)
+            ))
+            ->when($filter->verified === true, fn ($query) => $query->whereNotNull('email_verified_at'))
+            ->when($filter->verified === false, fn ($query) => $query->whereNull('email_verified_at'))
+            ->orderBy('id')
+            ->paginate($perPage);
     }
 
     public function roleNames(User $user): array
-    {
+    { 
         return $user->roles()->pluck('name')->all();
     }
 
@@ -66,5 +46,10 @@ class UserRepository
     public function addRole(User $user, int $roleId): void
     {
         $user->roles()->syncWithoutDetaching([$roleId]);
+    }
+
+    private function escapeLike(string $value): string
+    {
+        return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $value);
     }
 }
